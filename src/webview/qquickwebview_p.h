@@ -123,6 +123,7 @@ private Q_SLOTS:
     void onRunJavaScriptResult(int id, const QVariant &variant);
     void onFocusRequest(bool focus);
     void onLoadingChanged(const QWebViewLoadRequestPrivate &loadRequest);
+    void onCertificateError(const QWebViewCertificateErrorPrivate &certError);
 
 private:
     friend class QWebEngineWebViewPrivate;

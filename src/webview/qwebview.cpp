@@ -35,10 +35,14 @@
 ****************************************************************************/
 
 #include "qwebview_p.h"
+#include "qwebviewplugin_p.h"
 #include <QtWebView/private/qwebviewloadrequest_p.h>
 #include <QtWebView/private/qwebviewcertificateerror_p.h>
+#include <QtCore/private/qfactoryloader_p.h>
 
 QT_BEGIN_NAMESPACE
+
+Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QWebViewPluginInterface_iid, QLatin1String("/webview")));
 
 QWebView::QWebView(QObject *p)
     : QObject(p),

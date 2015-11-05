@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "qwebview_android_p.h"
+#include "qandroidwebview_p.h"
 #include "qwebview_p.h"
 #include "qwebviewloadrequest_p.h" // TODO:
 #include "qwebviewcertificateerror_p.h"

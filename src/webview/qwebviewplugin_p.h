@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QWEBVIEW_ANDROID_P_H
-#define QWEBVIEW_ANDROID_P_H
+#ifndef QWEBVIEWPLUGIN_H
+#define QWEBVIEWPLUGIN_H
 
 //
 //  W A R N I N G
@@ -48,61 +48,25 @@
 // We mean it.
 //
 
-#include <QtCore/qobject.h>
-#include <QtCore/qurl.h>
-#include <QtGui/qwindow.h>
-#include <QtCore/private/qjni_p.h>
-
+#include "qwebview_global.h"
 #include "qwebview_p_p.h"
+
+#include <QtCore/qobject.h>
+
+#define QWebViewPluginInterface_iid "org.qt-project.Qt.QWebViewPluginInterface"
 
 QT_BEGIN_NAMESPACE
 
-class QAndroidWebViewPrivate : public QWebViewPrivate
+class Q_WEBVIEW_EXPORT QWebViewPlugin : public QObject
 {
     Q_OBJECT
 public:
-    explicit QAndroidWebViewPrivate(QObject *p = 0);
-    ~QAndroidWebViewPrivate() Q_DECL_OVERRIDE;
+    explicit QWebViewPlugin(QObject *parent = 0);
+    virtual ~QWebViewPlugin();
 
-    QUrl url() const Q_DECL_OVERRIDE;
-    void setUrl(const QUrl &url) Q_DECL_OVERRIDE;
-    bool canGoBack() const Q_DECL_OVERRIDE;
-    bool canGoForward() const Q_DECL_OVERRIDE;
-    QString title() const Q_DECL_OVERRIDE;
-    int loadProgress() const Q_DECL_OVERRIDE;
-    bool isLoading() const Q_DECL_OVERRIDE;
-
-    void setParentView(QObject *view) Q_DECL_OVERRIDE;
-    QObject *parentView() const Q_DECL_OVERRIDE;
-    void setGeometry(const QRect &geometry) Q_DECL_OVERRIDE;
-    void setVisibility(QWindow::Visibility visibility) Q_DECL_OVERRIDE;
-    void setVisible(bool visible) Q_DECL_OVERRIDE;
-
-public Q_SLOTS:
-    void goBack() Q_DECL_OVERRIDE;
-    void goForward() Q_DECL_OVERRIDE;
-    void reload() Q_DECL_OVERRIDE;
-    void stop() Q_DECL_OVERRIDE;
-    void loadHtml(const QString &html, const QUrl &baseUrl = QUrl()) Q_DECL_OVERRIDE;
-    void grantFeaturePermission(const QUrl &securityOrigin,
-                                Feature feature,
-                                bool granted) Q_DECL_OVERRIDE;
-
-protected:
-    void runJavaScriptPrivate(const QString& script,
-                              int callbackId) Q_DECL_OVERRIDE;
-
-private Q_SLOTS:
-    void onApplicationStateChanged(Qt::ApplicationState state);
-
-private:
-    quintptr m_id;
-    quint64 m_callbackId;
-    QWindow *m_window;
-    QJNIObjectPrivate m_viewController;
-    QJNIObjectPrivate m_webView;
+    virtual QWebViewPrivate *create(const QString &key) const = 0;
 };
 
 QT_END_NAMESPACE
 
-#endif // QWEBVIEW_ANDROID_P_H
+#endif // QWEBVIEWPLUGIN_H

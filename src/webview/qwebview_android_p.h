@@ -84,6 +84,9 @@ public Q_SLOTS:
     void reload() Q_DECL_OVERRIDE;
     void stop() Q_DECL_OVERRIDE;
     void loadHtml(const QString &html, const QUrl &baseUrl = QUrl()) Q_DECL_OVERRIDE;
+    void grantFeaturePermission(const QUrl &securityOrigin,
+                                Feature feature,
+                                bool granted) Q_DECL_OVERRIDE;
 
 protected:
     void runJavaScriptPrivate(const QString& script,

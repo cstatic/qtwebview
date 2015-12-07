@@ -214,6 +214,13 @@ public class QtAndroidWebViewController
         {
             callback.invoke(origin, m_hasLocationPermission, false);
         }
+
+        // TODO: Requires API level 21 or higher...
+        @Override
+        public void onPermissionRequest(PermissionRequest request)
+        {
+
+        }
     }
 
     public QtAndroidWebViewController(final Activity activity, final long id)

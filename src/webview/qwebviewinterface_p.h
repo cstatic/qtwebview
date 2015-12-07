@@ -62,6 +62,13 @@ class QJSValue;
 class QWebViewInterface
 {
 public:
+    enum Feature {
+        MediaAudioCapture,
+        MediaVideoCapture,
+        MediaAudioVideoCapture,
+        Geolocation
+    };
+
     virtual ~QWebViewInterface() {}
     virtual QUrl url() const = 0;
     virtual void setUrl(const QUrl &url) = 0;
@@ -80,6 +87,9 @@ public:
 
     virtual void runJavaScriptPrivate(const QString &script,
                                       int callbackId) = 0;
+    virtual void grantFeaturePermission(const QUrl &securityOrigin,
+                                        Feature,
+                                        bool granted) = 0;
 };
 
 QT_END_NAMESPACE

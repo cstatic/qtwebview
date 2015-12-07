@@ -77,6 +77,13 @@ public:
         LoadFailedStatus
     };
 
+    enum Feature {
+        MediaAudioCapture,
+        MediaVideoCapture,
+        MediaAudioVideoCapture,
+        Geolocation
+    };
+
     QQuickWebView(QQuickItem *parent = 0);
     ~QQuickWebView();
 
@@ -96,12 +103,16 @@ public Q_SLOTS:
     Q_REVISION(1) void loadHtml(const QString &html, const QUrl &baseUrl = QUrl()) Q_DECL_OVERRIDE;
     Q_REVISION(1) void runJavaScript(const QString& script,
                                      const QJSValue &callback = QJSValue());
+    Q_REVISION(2) void grantFeaturePermission(const QUrl &origin,
+                                              Feature feature,
+                                              bool granted) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void titleChanged();
     void urlChanged();
     Q_REVISION(1) void loadingChanged(QQuickWebViewLoadRequest *loadRequest);
     Q_REVISION(2) void certificateError(QQuickWebViewCertificateError *error);
+    Q_REVISION(2) void featurePermissionRequested(const QUrl &origin, Feature feature);
     void loadProgressChanged();
 
 protected:

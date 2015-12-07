@@ -158,6 +158,13 @@ void QAndroidWebViewPrivate::loadHtml(const QString &html, const QUrl &baseUrl)
                                                           0);
 }
 
+void QAndroidWebViewPrivate::grantFeaturePermission(const QUrl &securityOrigin,
+                                                    QWebViewInterface::Feature feature,
+                                                    bool granted)
+{
+
+}
+
 bool QAndroidWebViewPrivate::canGoBack() const
 {
     return m_viewController.callMethod<jboolean>("canGoBack");

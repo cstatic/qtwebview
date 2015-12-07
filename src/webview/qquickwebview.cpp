@@ -283,6 +283,13 @@ void QQuickWebView::runJavaScript(const QString &script, const QJSValue &callbac
     runJavaScriptPrivate(script, callbackId);
 }
 
+void QQuickWebView::grantFeaturePermission(const QUrl &origin,
+                                           QQuickWebView::Feature feature,
+                                           bool granted)
+{
+    m_webView->grantFeaturePermission(origin, feature, granted);
+}
+
 void QQuickWebView::runJavaScriptPrivate(const QString &script, int callbackId)
 {
     m_webView->runJavaScriptPrivate(script, callbackId);

@@ -165,6 +165,12 @@ void QWebView::loadHtml(const QString &html, const QUrl &baseUrl)
     d->loadHtml(html, baseUrl);
 }
 
+void QWebView::grantFeaturePermission(const QUrl &securityOrigin, Feature feature, bool granted)
+{
+    Q_D(QWebView);
+    d->grantFeaturePermission(securityOrigin, feature, granted);
+}
+
 void QWebView::runJavaScriptPrivate(const QString &script,
                                     int callbackId)
 {

@@ -59,6 +59,7 @@
 QT_BEGIN_NAMESPACE
 
 class QWebViewLoadRequestPrivate;
+class QWebViewCertificateErrorPrivate;
 
 class Q_WEBVIEW_EXPORT QWebView
         : public QObject
@@ -72,6 +73,22 @@ public:
         LoadStoppedStatus,
         LoadSucceededStatus,
         LoadFailedStatus
+    };
+
+    enum SslError {
+        SslPinnedKeyNotInCertificateChain = -150,
+        CertificateCommonNameInvalid = -200,
+        CertificateDateInvalid = -201,
+        CertificateAuthorityInvalid = -202,
+        CertificateContainsErrors = -203,
+        CertificateNoRevocationMechanism = -204,
+        CertificateUnableToCheckRevocation = -205,
+        CertificateRevoked = -206,
+        CertificateInvalid = -207,
+        CertificateWeakSignatureAlgorithm = -208,
+        CertificateNonUniqueName = -210,
+        CertificateWeakKey = -211,
+        CertificateNameConstraintViolation = -212,
     };
 
     explicit QWebView(QObject *p = 0);
@@ -106,6 +123,7 @@ Q_SIGNALS:
     void loadProgressChanged();
     void javaScriptResult(int id, const QVariant &result);
     void requestFocus(bool focus);
+    void certificateError(const QWebViewCertificateErrorPrivate &certError);
 
 protected:
     void init() Q_DECL_OVERRIDE;
@@ -117,6 +135,7 @@ private Q_SLOTS:
     void onUrlChanged(const QUrl &url);
     void onLoadProgressChanged(int progress);
     void onLoadingChanged(const QWebViewLoadRequestPrivate &loadRequest);
+    void onCertificateError(const QWebViewCertificateErrorPrivate &certError);
 
 private:
     friend class QQuickViewController;

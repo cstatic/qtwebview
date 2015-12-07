@@ -34,52 +34,71 @@
 **
 ****************************************************************************/
 
-#ifndef QWEBVIEW_P_P_H
-#define QWEBVIEW_P_P_H
+#include "qwebviewcertificateerror_p.h"
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
 
-#include "qwebviewinterface_p.h"
-#include "qnativeviewcontroller_p.h"
-
-QT_BEGIN_NAMESPACE
-
-class QWebView;
-class QWebViewLoadRequestPrivate;
-class QWebViewCertificateErrorPrivate;
-
-class Q_WEBVIEW_EXPORT QWebViewPrivate
-        : public QObject
-        , public QWebViewInterface
-        , public QNativeViewController
+QWebViewCertificateErrorPrivate::QWebViewCertificateErrorPrivate()
+    : m_rejected(true)
+    , m_deferred(false)
+    , m_answered(false)
 {
-    Q_OBJECT
-public:
-    static QWebViewPrivate *create(QWebView *q);
 
-Q_SIGNALS:
-    void titleChanged(const QString &title);
-    void urlChanged(const QUrl &url);
-    void loadingChanged(const QWebViewLoadRequestPrivate &loadRequest);
-    void loadProgressChanged(int progress);
-    void javaScriptResult(int id, const QVariant &result);
-    void requestFocus(bool focus);
-    void receivedCertificateError(const QWebViewCertificateErrorPrivate &certError);
+}
 
-protected:
-    explicit QWebViewPrivate(QObject *p = 0) : QObject(p) { }
-};
+QWebViewCertificateErrorPrivate::~QWebViewCertificateErrorPrivate()
+{
 
-QT_END_NAMESPACE
+}
 
-#endif // QWEBVIEW_P_P_H
+void QWebViewCertificateErrorPrivate::defer()
+{
+    m_deferred = true;
+    m_answered = true;
+}
 
+void QWebViewCertificateErrorPrivate::ignoreCertificateError()
+{
+    m_rejected = false;
+    m_answered = true;
+}
+
+void QWebViewCertificateErrorPrivate::rejectCertificate()
+{
+    m_rejected = true;
+    m_answered = true;
+}
+
+QUrl QWebViewCertificateErrorPrivate::url() const
+{
+    return m_url;
+}
+
+QWebViewCertificateErrorPrivate::Error QWebViewCertificateErrorPrivate::error() const
+{
+    return m_error;
+}
+
+QString QWebViewCertificateErrorPrivate::description() const
+{
+    return m_description;
+}
+
+bool QWebViewCertificateErrorPrivate::overridable() const
+{
+    return m_overridable;
+}
+
+bool QWebViewCertificateErrorPrivate::deferred() const
+{
+    return m_deferred;
+}
+
+bool QWebViewCertificateErrorPrivate::answered() const
+{
+    return m_answered;
+}
+
+bool QWebViewCertificateErrorPrivate::rejected() const
+{
+    return m_rejected;
+}

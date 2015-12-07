@@ -54,6 +54,8 @@ import java.util.concurrent.Semaphore;
 import java.lang.reflect.Method;
 import android.os.Build;
 import java.util.concurrent.TimeUnit;
+import android.webkit.SslErrorHandler;
+import android.net.http.SslError;
 
 public class QtAndroidWebViewController
 {
@@ -87,12 +89,33 @@ public class QtAndroidWebViewController
     private native void c_onReceivedTitle(long id, String title);
     private native void c_onRunJavaScriptResult(long id, long callbackId, String result);
     private native void c_onReceivedError(long id, int errorCode, String description, String url);
+    private native int c_onReceivedSslError(long id, int errorCode, String description, String url);
 
     // We need to block the UI thread in some cases, if it takes to long we should timeout before
     // ANR kicks in... Usually the hard limit is set to 10s and if exceed that then we're in trouble.
     // In general we should not let input events be delayed for more then 500ms (If we're spending more
     // then 200ms somethings off...).
     private final long BLOCKING_TIMEOUT = 250;
+
+    private static String getSslErrorDescription(final int sslError)
+    {
+        switch (sslError) {
+            case 4 /*SslError.SSL_DATE_INVALID*/:
+                return "The date of the certificate is invalid";
+            case SslError.SSL_EXPIRED:
+                return "The certificate has expired";
+            case SslError.SSL_IDMISMATCH:
+                return "Hostname mismatch";
+            case 5 /*SslError.SSL_INVALID*/:
+                return "A generic error occurred";
+            case SslError.SSL_NOTYETVALID:
+                return "The certificate is not yet valid";
+            case SslError.SSL_UNTRUSTED:
+                return "The certificate authority is not trusted";
+        }
+
+        return "Unknown error";
+    }
 
     private void resetLoadingState(final int state)
     {
@@ -143,6 +166,18 @@ public class QtAndroidWebViewController
             resetLoadingState(INIT_STATE);
             c_onReceivedError(m_id, errorCode, description, url);
         }
+
+        @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error)
+        {
+            final int sslErrorNr = error.getPrimaryError();
+            final int action = c_onReceivedSslError(m_id, sslErrorNr, getSslErrorDescription(sslErrorNr), "-- TODO --"/* error.getUrl()*/);
+            if (action == 1) // Ignore
+                handler.proceed();
+            else
+                handler.cancel(); // Reject/defer
+        }
+
     }
 
     private class QtAndroidWebChromeClient extends WebChromeClient

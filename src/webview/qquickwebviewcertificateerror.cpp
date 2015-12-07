@@ -34,52 +34,71 @@
 **
 ****************************************************************************/
 
-#ifndef QWEBVIEW_P_P_H
-#define QWEBVIEW_P_P_H
+#include "qquickwebviewcertificateerror_p.h"
+#include <QtWebView/private/qwebviewcertificateerror_p.h>
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include "qwebviewinterface_p.h"
-#include "qnativeviewcontroller_p.h"
-
-QT_BEGIN_NAMESPACE
-
-class QWebView;
-class QWebViewLoadRequestPrivate;
-class QWebViewCertificateErrorPrivate;
-
-class Q_WEBVIEW_EXPORT QWebViewPrivate
-        : public QObject
-        , public QWebViewInterface
-        , public QNativeViewController
+QQuickWebViewCertificateError::QQuickWebViewCertificateError(QObject *parent)
+    : QObject(parent)
 {
-    Q_OBJECT
-public:
-    static QWebViewPrivate *create(QWebView *q);
+}
 
-Q_SIGNALS:
-    void titleChanged(const QString &title);
-    void urlChanged(const QUrl &url);
-    void loadingChanged(const QWebViewLoadRequestPrivate &loadRequest);
-    void loadProgressChanged(int progress);
-    void javaScriptResult(int id, const QVariant &result);
-    void requestFocus(bool focus);
-    void receivedCertificateError(const QWebViewCertificateErrorPrivate &certError);
+QQuickWebViewCertificateError::~QQuickWebViewCertificateError()
+{
 
-protected:
-    explicit QWebViewPrivate(QObject *p = 0) : QObject(p) { }
-};
+}
 
-QT_END_NAMESPACE
+void QQuickWebViewCertificateError::defer()
+{
+    Q_D(QWebViewCertificateError);
+    d->defer();
+}
 
-#endif // QWEBVIEW_P_P_H
+void QQuickWebViewCertificateError::ignoreCertificateError()
+{
+    Q_D(QWebViewCertificateError);
+    d->ignoreCertificateError();
+}
+
+void QQuickWebViewCertificateError::rejectCertificate()
+{
+    Q_D(QWebViewCertificateError);
+    d->rejectCertificate();
+}
+
+QUrl QQuickWebViewCertificateError::url() const
+{
+    Q_D(const QWebViewCertificateError);
+    return d->url();
+}
+
+QQuickWebViewCertificateError::Error QQuickWebViewCertificateError::error() const
+{
+    Q_D(const QWebViewCertificateError);
+    return static_cast<QQuickWebViewCertificateError::Error>(d->error());
+}
+
+QString QQuickWebViewCertificateError::description() const
+{
+    Q_D(const QWebViewCertificateError);
+    return d->description();
+}
+
+bool QQuickWebViewCertificateError::overridable() const
+{
+    Q_D(const QWebViewCertificateError);
+    return d->overridable();
+}
+
+bool QQuickWebViewCertificateError::deferred() const
+{
+    Q_D(const QWebViewCertificateError);
+    return d->deferred();
+}
+
+bool QQuickWebViewCertificateError::answered() const
+{
+    Q_D(const QWebViewCertificateError);
+    return d->answered();
+}
+
 

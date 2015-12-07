@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QWEBVIEW_P_P_H
-#define QWEBVIEW_P_P_H
+#ifndef QQUICKWEBVIEWCERTIFICATEERROR_P_H
+#define QQUICKWEBVIEWCERTIFICATEERROR_P_H
 
 //
 //  W A R N I N G
@@ -48,38 +48,60 @@
 // We mean it.
 //
 
-#include "qwebviewinterface_p.h"
-#include "qnativeviewcontroller_p.h"
+#include <QObject>
+#include "qquickwebview_p.h"
 
 QT_BEGIN_NAMESPACE
 
-class QWebView;
-class QWebViewLoadRequestPrivate;
 class QWebViewCertificateErrorPrivate;
 
-class Q_WEBVIEW_EXPORT QWebViewPrivate
-        : public QObject
-        , public QWebViewInterface
-        , public QNativeViewController
+class Q_WEBVIEW_EXPORT QQuickWebViewCertificateError : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QUrl url READ url)
+    Q_PROPERTY(Error error READ error)
+    Q_PROPERTY(QString description READ description)
+    Q_PROPERTY(bool overridable READ overridable)
+    Q_ENUMS(Error)
+
 public:
-    static QWebViewPrivate *create(QWebView *q);
+    enum Error {
+        SslPinnedKeyNotInCertificateChain = -150,
+        CertificateCommonNameInvalid = -200,
+        CertificateDateInvalid = -201,
+        CertificateAuthorityInvalid = -202,
+        CertificateContainsErrors = -203,
+        CertificateNoRevocationMechanism = -204,
+        CertificateUnableToCheckRevocation = -205,
+        CertificateRevoked = -206,
+        CertificateInvalid = -207,
+        CertificateWeakSignatureAlgorithm = -208,
+        CertificateNonUniqueName = -210,
+        CertificateWeakKey = -211,
+        CertificateNameConstraintViolation = -212,
+    };
 
-Q_SIGNALS:
-    void titleChanged(const QString &title);
-    void urlChanged(const QUrl &url);
-    void loadingChanged(const QWebViewLoadRequestPrivate &loadRequest);
-    void loadProgressChanged(int progress);
-    void javaScriptResult(int id, const QVariant &result);
-    void requestFocus(bool focus);
-    void receivedCertificateError(const QWebViewCertificateErrorPrivate &certError);
+    QQuickWebViewCertificateError(QObject *parent = 0);
+    ~QQuickWebViewCertificateError();
 
-protected:
-    explicit QWebViewPrivate(QObject *p = 0) : QObject(p) { }
+    Q_INVOKABLE void defer();
+    Q_INVOKABLE void ignoreCertificateError();
+    Q_INVOKABLE void rejectCertificate();
+    QUrl url() const;
+    Error error() const;
+    QString description() const;
+    bool overridable() const;
+    bool deferred() const;
+    bool answered() const;
+
+private:
+    Q_DISABLE_COPY(QQuickWebViewCertificateError)
+    Q_DECLARE_PRIVATE(QWebViewCertificateError)
+    QScopedPointer<QWebViewCertificateErrorPrivate> d_ptr;
 };
 
 QT_END_NAMESPACE
 
-#endif // QWEBVIEW_P_P_H
+//QML_DECLARE_TYPE(QQuickWebViewCertificateError)
 
+#endif // QQUICKWEBVIEWCERTIFICATEERROR_P_H

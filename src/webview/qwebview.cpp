@@ -36,6 +36,7 @@
 
 #include "qwebview_p.h"
 #include <QtWebView/private/qwebviewloadrequest_p.h>
+#include <QtWebView/private/qwebviewcertificateerror_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -205,6 +206,11 @@ void QWebView::onLoadingChanged(const QWebViewLoadRequestPrivate &loadRequest)
 
     onUrlChanged(loadRequest.m_url);
     Q_EMIT loadingChanged(loadRequest);
+
+}
+
+void QWebView::onCertificateError(const QWebViewCertificateErrorPrivate &certError)
+{
 
 }
 

@@ -37,6 +37,7 @@
 #include "qwebview_android_p.h"
 #include "qwebview_p.h"
 #include "qwebviewloadrequest_p.h" // TODO:
+#include "qwebviewcertificateerror_p.h"
 #include <QtCore/private/qjnihelpers_p.h>
 #include <QtCore/private/qjni_p.h>
 
@@ -436,6 +437,31 @@ static void c_onReceivedError(JNIEnv *env,
     Q_EMIT wc->loadingChanged(loadRequest);
 }
 
+static int c_onReceivedSslError(JNIEnv *env,
+                                 jobject thiz,
+                                 jlong id,
+                                 jint errorCode,
+                                 jstring description,
+                                 jstring url)
+{
+    Q_UNUSED(env)
+    Q_UNUSED(thiz)
+    Q_UNUSED(errorCode)
+
+    const WebViews &wv = (*g_webViews);
+    QAndroidWebViewPrivate *wc = wv[id];
+    if (!wc)
+        return 0;
+
+    // TODO: remove unused
+    Q_UNUSED(description)
+    Q_UNUSED(url)
+    QWebViewCertificateErrorPrivate certificateError;
+    Q_EMIT wc->receivedCertificateError(certificateError);
+    Q_ASSERT(certificateError.answered());
+    return !certificateError.rejected() ? 1 : 0;
+}
+
 JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
 {
     typedef union {
@@ -462,7 +488,8 @@ JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
         {"c_onReceivedIcon", "(JLandroid/graphics/Bitmap;)V", reinterpret_cast<void *>(c_onReceivedIcon)},
         {"c_onReceivedTitle", "(JLjava/lang/String;)V", reinterpret_cast<void *>(c_onReceivedTitle)},
         {"c_onRunJavaScriptResult", "(JJLjava/lang/String;)V", reinterpret_cast<void *>(c_onRunJavaScriptResult)},
-        {"c_onReceivedError", "(JILjava/lang/String;Ljava/lang/String;)V", reinterpret_cast<void *>(c_onReceivedError)}
+        {"c_onReceivedError", "(JILjava/lang/String;Ljava/lang/String;)V", reinterpret_cast<void *>(c_onReceivedError)},
+        {"c_onReceivedSslError", "(JILjava/lang/String;Ljava/lang/String;)I", reinterpret_cast<void *>(c_onReceivedSslError)}
     };
 
     const int nMethods = sizeof(methods) / sizeof(methods[0]);

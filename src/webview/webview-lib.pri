@@ -22,14 +22,18 @@ COMMON_HEADERS += \
     qwebview_p_p.h \
     qquickviewcontroller_p.h \
     qwebviewloadrequest_p.h \
-    qquickwebviewloadrequest_p.h
+    qquickwebviewloadrequest_p.h \
+    qwebviewcertificateerror_p.h \
+    qquickwebviewcertificateerror_p.h
 
 COMMON_SOURCES += \
     qwebview.cpp \
     qquickwebview.cpp \
     qquickviewcontroller.cpp \
+    qwebviewloadrequest.cpp \
     qquickwebviewloadrequest.cpp \
-    qwebviewloadrequest.cpp
+    qwebviewcertificateerror.cpp \
+    qquickwebviewcertificateerror.cpp
 
 android {
     QT_FOR_PRIVATE += core-private

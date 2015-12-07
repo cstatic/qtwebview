@@ -56,6 +56,7 @@ QT_BEGIN_NAMESPACE
 
 class QQuickWebViewLoadRequest;
 class QWebViewLoadRequestPrivate;
+class QQuickWebViewCertificateError;
 
 class Q_WEBVIEW_EXPORT QQuickWebView : public QQuickViewController, public QWebViewInterface
 {
@@ -100,6 +101,7 @@ Q_SIGNALS:
     void titleChanged();
     void urlChanged();
     Q_REVISION(1) void loadingChanged(QQuickWebViewLoadRequest *loadRequest);
+    Q_REVISION(2) void certificateError(QQuickWebViewCertificateError *error);
     void loadProgressChanged();
 
 protected:

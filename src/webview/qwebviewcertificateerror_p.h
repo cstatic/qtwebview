@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QWEBVIEW_P_P_H
-#define QWEBVIEW_P_P_H
+#ifndef QWEBVIEWCERTIFICATEERRORPRIVATE_P_H
+#define QWEBVIEWCERTIFICATEERRORPRIVATE_P_H
 
 //
 //  W A R N I N G
@@ -48,38 +48,58 @@
 // We mean it.
 //
 
-#include "qwebviewinterface_p.h"
-#include "qnativeviewcontroller_p.h"
+#include <QtWebView/private/qwebview_p.h>
+
+#include <QtCore/qstring.h>
+#include <QtCore/qurl.h>
 
 QT_BEGIN_NAMESPACE
 
-class QWebView;
-class QWebViewLoadRequestPrivate;
-class QWebViewCertificateErrorPrivate;
-
-class Q_WEBVIEW_EXPORT QWebViewPrivate
-        : public QObject
-        , public QWebViewInterface
-        , public QNativeViewController
+class Q_WEBVIEW_EXPORT QWebViewCertificateErrorPrivate
 {
-    Q_OBJECT
 public:
-    static QWebViewPrivate *create(QWebView *q);
+    enum Error {
+        SslPinnedKeyNotInCertificateChain = -150,
+        CertificateCommonNameInvalid = -200,
+        CertificateDateInvalid = -201,
+        CertificateAuthorityInvalid = -202,
+        CertificateContainsErrors = -203,
+        CertificateNoRevocationMechanism = -204,
+        CertificateUnableToCheckRevocation = -205,
+        CertificateRevoked = -206,
+        CertificateInvalid = -207,
+        CertificateWeakSignatureAlgorithm = -208,
+        CertificateNonUniqueName = -210,
+        CertificateWeakKey = -211,
+        CertificateNameConstraintViolation = -212,
+    };
 
-Q_SIGNALS:
-    void titleChanged(const QString &title);
-    void urlChanged(const QUrl &url);
-    void loadingChanged(const QWebViewLoadRequestPrivate &loadRequest);
-    void loadProgressChanged(int progress);
-    void javaScriptResult(int id, const QVariant &result);
-    void requestFocus(bool focus);
-    void receivedCertificateError(const QWebViewCertificateErrorPrivate &certError);
+    QWebViewCertificateErrorPrivate();
+    ~QWebViewCertificateErrorPrivate();
 
-protected:
-    explicit QWebViewPrivate(QObject *p = 0) : QObject(p) { }
+    void defer();
+    void ignoreCertificateError();
+    void rejectCertificate();
+    QUrl url() const;
+    Error error() const;
+    QString description() const;
+    bool overridable() const;
+    bool deferred() const;
+    bool answered() const;
+    bool rejected() const;
+
+private:
+    QUrl m_url;
+    Error m_error;
+    QString m_description;
+    bool m_rejected;
+    bool m_deferred;
+    bool m_answered;
+    bool m_overridable;
 };
+
+Q_DECLARE_METATYPE(QWebViewCertificateErrorPrivate)
 
 QT_END_NAMESPACE
 
-#endif // QWEBVIEW_P_P_H
-
+#endif // QWEBVIEWCERTIFICATEERRORPRIVATE_P_H

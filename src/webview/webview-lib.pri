@@ -42,6 +42,7 @@ android {
         qwebview_android_p.h
 
 } else:ios {
+    LIBS_PRIVATE += -framework WebKit
     SOURCES += \
         $$COMMON_SOURCES
     OBJECTIVE_SOURCES += \
